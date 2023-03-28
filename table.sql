@@ -1,3 +1,4 @@
+-- Active: 1679921219913@@127.0.0.1@5432@ecomm_dev_srv
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 DROP TABLE IF EXISTS customers;
@@ -11,13 +12,13 @@ CREATE TABLE IF NOT EXISTS customers(
   email CHAR(50) NOT NULL UNIQUE,
   phone VARCHAR(15),
   passcode CHAR(50),
-  createdAt TIMESTAMP,
-  updatedAt TIMESTAMP,
+  createdAt TIMESTAMP DEFAULT NOW(),
+  updatedAt TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY(customerId),
   UNIQUE(phone)
 );
 
-CREATE IF NOT EXISTS UNIQUE INDEX CONCURRENTLY customers_customerId ON customers(customerId);
+CREATE UNIQUE INDEX CONCURRENTLY customers_customerId ON customers(customerId);
 
 CREATE TABLE IF NOT EXISTS products(
   productId UUID DEFAULT uuid_generate_v4(),
@@ -25,8 +26,8 @@ CREATE TABLE IF NOT EXISTS products(
   productName VARCHAR NOT NULL,
   productCategory VARCHAR NOT NULL,
   productPrice DECIMAL(18, 2) NOT NULL,
-  createdAt TIMESTAMP,
-  updatedAt TIMESTAMP,
+  createdAt TIMESTAMP DEFAULT NOW(),
+  updatedAt TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY(productId),
   CONSTRAINT fk_customer
     FOREIGN KEY(customerId)
@@ -40,8 +41,8 @@ CREATE TABLE IF NOT EXISTS productImages(
   productId UUID NOT NULL,
   customerId UUID NOT NULL,
   productImage VARCHAR NOT NULL,
-  createdAt TIMESTAMP,
-  updatedAt TIMESTAMP,
+  createdAt TIMESTAMP DEFAULT NOW(),
+  updatedAt TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY(productImageId),
   CONSTRAINT fk_product
     FOREIGN KEY(productId)
@@ -56,8 +57,8 @@ CREATE TABLE IF NOT EXISTS orders(
   deliveryAddr VARCHAR NULL,
   deliveryContact VARCHAR NOT NULL,
   deliveryNote VARCHAR NOT NULL,
-  createdAt TIMESTAMP,
-  updatedAt TIMESTAMP,
+  createdAt TIMESTAMP DEFAULT NOW(),
+  updatedAt TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY(orderId),
   CONSTRAINT fk_multiple
     FOREIGN KEY(customerId)
